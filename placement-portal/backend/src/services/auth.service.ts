@@ -71,7 +71,7 @@ export class AuthService {
         };
 
         const token = jwt.sign(payload, env.JWT_SECRET, {
-            expiresIn: env.JWT_EXPIRES_IN,
+            expiresIn: env.JWT_EXPIRES_IN as any,
         });
 
         logger.info(`User logged in: ${email}`);

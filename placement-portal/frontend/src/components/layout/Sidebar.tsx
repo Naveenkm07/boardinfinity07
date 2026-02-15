@@ -13,17 +13,24 @@ export const Sidebar: React.FC = () => {
 
     const studentLinks = [
         { href: '/student', label: 'Dashboard', icon: '📊' },
+        { href: '/student/courses', label: 'Courses', icon: '📚' },
+        { href: '/student/sessions', label: 'Sessions', icon: '📅' },
+        { href: '/student/assessments', label: 'Assessments', icon: '📝' },
+        { href: '/student/resources', label: 'Resources', icon: '🎯' },
+        { href: '/student/competitions', label: 'Competitions', icon: '🏆' },
+        { href: '/student/coding', label: 'Coding Practice', icon: '💻' },
         { href: '/student/profile', label: 'My Profile', icon: '👤' },
-        { href: '/student/placements', label: 'Placements', icon: '🏢' },
-        { href: '/student/applications', label: 'Applications', icon: '📋' },
     ];
 
     const adminLinks = [
-        { href: '/admin', label: 'Dashboard', icon: '📊' },
-        { href: '/admin/students', label: 'Students', icon: '👥' },
-        { href: '/admin/companies', label: 'Companies', icon: '🏢' },
-        { href: '/admin/placements', label: 'Placements', icon: '📋' },
-        { href: '/admin/reports', label: 'Reports', icon: '📈' },
+        { href: '/admin', label: 'Admin Panel', icon: '⚙️' },
+        { href: '/student', label: 'Dashboard', icon: '📊' },
+        { href: '/student/courses', label: 'Courses', icon: '📚' },
+        { href: '/student/sessions', label: 'Sessions', icon: '📅' },
+        { href: '/student/assessments', label: 'Assessments', icon: '📝' },
+        { href: '/student/resources', label: 'Resources', icon: '🎯' },
+        { href: '/student/competitions', label: 'Competitions', icon: '🏆' },
+        { href: '/student/coding', label: 'Coding Practice', icon: '💻' },
     ];
 
     const links = user?.role === UserRole.ADMIN ? adminLinks : studentLinks;

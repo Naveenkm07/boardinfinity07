@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { AuthService } from '../services/auth.service';
 import { ApiResponse } from '../utils/ApiResponse';
+import { AuthRequest } from '../types';
 
 /**
  * Authentication Controller.
@@ -46,7 +47,7 @@ export class AuthController {
      */
     static async getMe(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const user = await AuthService.getCurrentUser(req.user!.userId);
+            const user = await AuthService.getCurrentUser((req as AuthRequest).user!.userId);
 
             ApiResponse.success(res, { user }, 'Profile retrieved');
         } catch (error) {

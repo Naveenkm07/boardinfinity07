@@ -69,8 +69,8 @@ const userSchema = new Schema<IUserDocument>(
             // Transform output when converting to JSON (e.g., for API responses)
             transform(_doc, ret) {
                 ret.id = ret._id;
-                delete ret._id;
-                delete ret.__v;
+                delete (ret as any)._id;
+                delete (ret as any).__v;
                 return ret;
             },
         },

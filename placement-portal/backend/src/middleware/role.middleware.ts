@@ -13,11 +13,11 @@ import { ApiError } from '../utils/ApiError';
  */
 export const authorize = (...allowedRoles: UserRole[]) => {
     return (req: Request, _res: Response, next: NextFunction): void => {
-        if (!req.user) {
+        if (!(req as any).user) {
             return next(ApiError.unauthorized('Authentication required'));
         }
 
-        if (!allowedRoles.includes(req.user.role as UserRole)) {
+        if (!allowedRoles.includes((req as any).user.role as UserRole)) {
             return next(
                 ApiError.forbidden(
                     `Access denied. Required role(s): ${allowedRoles.join(', ')}`,

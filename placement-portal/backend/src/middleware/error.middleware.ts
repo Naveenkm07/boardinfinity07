@@ -46,7 +46,7 @@ export const errorHandler = (
         }
     }
     // Mongoose duplicate key error
-    else if (err.name === 'MongoServerError' && (err as Record<string, unknown>).code === 11000) {
+    else if (err.name === 'MongoServerError' && (err as unknown as Record<string, unknown>).code === 11000) {
         statusCode = 409;
         message = 'Duplicate entry — resource already exists';
     }

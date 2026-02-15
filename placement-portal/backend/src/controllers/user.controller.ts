@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { UserService } from '../services/user.service';
 import { ApiResponse } from '../utils/ApiResponse';
-import { UserRole } from '../types';
+import { UserRole, AuthRequest } from '../types';
 import { CONSTANTS } from '../utils/constants';
 
 /**
@@ -15,7 +15,7 @@ export class UserController {
      */
     static async getProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const user = await UserService.getUserById(req.user!.userId);
+            const user = await UserService.getUserById((req as AuthRequest).user!.userId);
             ApiResponse.success(res, { user: user.toJSON() }, 'Profile retrieved');
         } catch (error) {
             next(error);
@@ -29,7 +29,7 @@ export class UserController {
     static async updateProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const { name, department, rollNumber, phone } = req.body;
-            const user = await UserService.updateProfile(req.user!.userId, {
+            const user = await UserService.updateProfile((req as AuthRequest).user!.userId, {
                 name,
                 department,
                 rollNumber,
@@ -72,7 +72,7 @@ export class UserController {
      */
     static async deleteUser(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            await UserService.deleteUser(req.params.id);
+            await UserService.deleteUser(req.params.id as string);
             ApiResponse.success(res, null, 'User deleted');
         } catch (error) {
             next(error);

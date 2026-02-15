@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JwtPayload } from './index';
 
 /**
@@ -11,3 +12,5 @@ declare global {
         }
     }
 }
+
+export { };

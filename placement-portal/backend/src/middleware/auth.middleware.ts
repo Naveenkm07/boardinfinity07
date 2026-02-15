@@ -33,7 +33,7 @@ export const authenticate = (req: Request, _res: Response, next: NextFunction): 
         const decoded = jwt.verify(token, env.JWT_SECRET) as JwtPayload;
 
         // Attach user info to request for downstream handlers
-        req.user = decoded;
+        (req as any).user = decoded;
 
         next();
     } catch (error) {

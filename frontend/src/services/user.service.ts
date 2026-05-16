@@ -17,7 +17,22 @@ export const userService = {
      * Update the authenticated user's profile.
      */
     updateProfile: async (
-        updates: Partial<Pick<User, 'name' | 'department' | 'rollNumber' | 'phone'>>,
+        updates: Partial<
+            Pick<
+                User,
+                | 'name'
+                | 'username'
+                | 'department'
+                | 'rollNumber'
+                | 'phone'
+                | 'summary'
+                | 'skills'
+                | 'socialLinks'
+                | 'experience'
+                | 'education'
+                | 'resumeUrl'
+            >
+        >,
     ): Promise<ApiResponse<{ user: User }>> => {
         const { data } = await api.patch<ApiResponse<{ user: User }>>('/users/profile', updates);
         return data;
@@ -47,6 +62,48 @@ export const userService = {
      */
     deleteUser: async (userId: string): Promise<ApiResponse> => {
         const { data } = await api.delete<ApiResponse>(`/users/${userId}`);
+        return data;
+    },
+
+    /**
+     * Upload resume PDF and update profile.
+     */
+    uploadResume: async (file: File): Promise<ApiResponse<{ user: User; extractedSkills: string[]; resumeUrl: string }>> => {
+        const formData = new FormData();
+        formData.append('resume', file);
+        const { data } = await api.post<ApiResponse<{ user: User; extractedSkills: string[]; resumeUrl: string }>>(
+            '/users/resume',
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            }
+        );
+        return data;
+    },
+
+    /**
+     * Score resume against a job description.
+     */
+    scoreResume: async (jobDescription: string): Promise<ApiResponse<any>> => {
+        const { data } = await api.post<ApiResponse<any>>('/users/score-resume', { jobDescription });
+        return data;
+    },
+
+    /**
+     * Sync top repositories from GitHub.
+     */
+    syncGithub: async (): Promise<ApiResponse<{ repos: any[] }>> => {
+        const { data } = await api.post<ApiResponse<{ repos: any[] }>>('/users/sync-github');
+        return data;
+    },
+
+    /**
+     * Get students leaderboard.
+     */
+    getLeaderboard: async (): Promise<ApiResponse<{ leaderboard: any[] }>> => {
+        const { data } = await api.get<ApiResponse<{ leaderboard: any[] }>>('/users/leaderboard');
         return data;
     },
 };

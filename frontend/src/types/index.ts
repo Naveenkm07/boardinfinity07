@@ -13,6 +13,7 @@ export enum UserRole {
 export interface User {
     id: string;
     email: string;
+    username?: string;
     name: string;
     role: UserRole;
     isVerified: boolean;
@@ -20,6 +21,38 @@ export interface User {
     rollNumber?: string;
     phone?: string;
     profileImage?: string;
+    summary?: string;
+    skills?: string[];
+    githubRepos?: {
+        name: string;
+        description: string;
+        html_url: string;
+        stargazers_count: number;
+        language: string;
+    }[];
+    socialLinks?: {
+        github?: string;
+        linkedin?: string;
+        twitter?: string;
+        portfolio?: string;
+    };
+    experience?: {
+        title: string;
+        company: string;
+        location?: string;
+        startDate: string;
+        endDate?: string;
+        current: boolean;
+        description?: string;
+    }[];
+    education?: {
+        school: string;
+        degree: string;
+        fieldOfStudy: string;
+        startYear: number;
+        endYear?: number;
+    }[];
+    resumeUrl?: string;
     createdAt: string;
     updatedAt: string;
 }
@@ -218,6 +251,7 @@ export interface TestResult {
     actual: string;
     passed: boolean;
     executionTime: number;
+    error?: string | null;
 }
 
 export interface CodeExecutionResult {
@@ -237,6 +271,43 @@ export interface AdminAnalytics {
     totalCourses: number;
     totalSessions: number;
     totalAssessments: number;
+    totalJobs: number;
+    totalApplications: number;
     averageProgress: number;
     recentSignups: User[];
+    applicationStats: { name: string; count: number }[];
+    placementStats: { name: string; value: number }[];
+}
+
+// ─── Job Types ──────────────────────────────────────────────
+
+export type JobType = 'full-time' | 'part-time' | 'internship' | 'contract';
+export type JobStatus = 'open' | 'closed' | 'draft';
+export type ApplicationStatus = 'applied' | 'shortlisted' | 'interview' | 'offered' | 'rejected';
+
+export interface Job {
+    id: string;
+    title: string;
+    company: string;
+    location: string;
+    description: string;
+    requirements: string[];
+    skills: string[];
+    salary?: string;
+    type: JobType;
+    status: JobStatus;
+    deadline: string;
+    createdBy: string | Partial<User>;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface JobApplication {
+    id: string;
+    jobId: string | Job;
+    studentId: string | User;
+    resumeUrl: string;
+    status: ApplicationStatus;
+    appliedAt: string;
+    updatedAt: string;
 }

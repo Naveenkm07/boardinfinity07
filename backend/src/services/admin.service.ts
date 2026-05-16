@@ -3,6 +3,7 @@ import { Course } from '../models/course.model';
 import { Session } from '../models/session.model';
 import { Assessment, AssessmentResult } from '../models/assessment.model';
 import { Progress } from '../models/progress.model';
+import { Job, JobApplication } from '../models/job.model';
 
 /**
  * Admin Service — analytics, user management, and content management.
@@ -18,21 +19,58 @@ export class AdminService {
             totalCourses,
             totalSessions,
             totalAssessments,
+            totalJobs,
+            totalApplications,
             averageProgress,
             recentSignups,
+            applicationTrends,
+            placementDist,
         ] = await Promise.all([
             User.countDocuments(),
             User.countDocuments({ role: 'student' }),
             Course.countDocuments({ isPublished: true }),
             Session.countDocuments(),
             Assessment.countDocuments(),
+            Job.countDocuments(),
+            JobApplication.countDocuments(),
             Progress.aggregate([{ $group: { _id: null, avg: { $avg: '$percentage' } } }]),
             User.find()
                 .sort({ createdAt: -1 })
                 .limit(10)
                 .select('name email role createdAt')
                 .lean(),
+            // Real application trends (last 6 months)
+            JobApplication.aggregate([
+                {
+                    $group: {
+                        _id: { $month: '$createdAt' },
+                        count: { $sum: 1 },
+                    },
+                },
+                { $sort: { '_id': 1 } },
+                { $limit: 6 }
+            ]),
+            // Real placement distribution
+            JobApplication.aggregate([
+                {
+                    $group: {
+                        _id: '$status',
+                        value: { $sum: 1 },
+                    },
+                }
+            ]),
         ]);
+
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const applicationStats = applicationTrends.map(item => ({
+            name: months[item._id - 1],
+            count: item.count
+        }));
+
+        const placementStats = placementDist.map(item => ({
+            name: item._id.charAt(0).toUpperCase() + item._id.slice(1),
+            value: item.value
+        }));
 
         return {
             totalUsers,
@@ -41,8 +79,17 @@ export class AdminService {
             totalCourses,
             totalSessions,
             totalAssessments,
+            totalJobs,
+            totalApplications,
             averageProgress: averageProgress[0]?.avg || 0,
             recentSignups,
+            applicationStats: applicationStats.length > 0 ? applicationStats : [
+                { name: 'Jan', count: 0 },
+                { name: 'Feb', count: 0 },
+            ],
+            placementStats: placementStats.length > 0 ? placementStats : [
+                { name: 'Applied', value: 0 },
+            ],
         };
     }
 

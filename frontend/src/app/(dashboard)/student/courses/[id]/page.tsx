@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { courseService } from '../../../../../services/course.service';
+import { certificateService } from '../../../../../services/certificate.service';
 import { Course, CourseProgress, Lesson } from '../../../../../types';
 import { useParams } from 'next/navigation';
 
@@ -13,6 +14,7 @@ export default function CourseDetailPage() {
     const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
     const [loading, setLoading] = useState(true);
     const [enrolling, setEnrolling] = useState(false);
+    const [downloadingCert, setDownloadingCert] = useState(false);
 
     useEffect(() => {
         fetchCourse();
@@ -54,6 +56,19 @@ export default function CourseDetailPage() {
             setProgress(p);
         } catch (err) {
             console.error('Failed to update progress:', err);
+        }
+    }
+
+    async function handleDownloadCertificate() {
+        if (!course) return;
+        setDownloadingCert(true);
+        try {
+            await certificateService.downloadCertificate(course.title);
+        } catch (err) {
+            console.error('Failed to download certificate:', err);
+            alert('Could not download certificate at this time.');
+        } finally {
+            setDownloadingCert(false);
         }
     }
 
@@ -104,12 +119,22 @@ export default function CourseDetailPage() {
                             <span>Progress</span>
                             <span>{progress.percentage}%</span>
                         </div>
-                        <div className="h-2 w-full rounded-full bg-gray-100">
+                        <div className="h-2 w-full rounded-full bg-gray-100 mb-4">
                             <div
                                 className="h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all"
                                 style={{ width: `${progress.percentage}%` }}
                             />
                         </div>
+                        
+                        {progress.percentage === 100 && (
+                            <button
+                                onClick={handleDownloadCertificate}
+                                disabled={downloadingCert}
+                                className="w-full py-2.5 rounded-lg bg-green-50 text-green-700 font-bold text-sm hover:bg-green-100 transition flex items-center justify-center gap-2"
+                            >
+                                <span>🎓</span> {downloadingCert ? 'Generating...' : 'Download Certificate'}
+                            </button>
+                        )}
                     </div>
                 )}
             </div>

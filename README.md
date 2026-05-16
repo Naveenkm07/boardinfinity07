@@ -1,35 +1,38 @@
 # 🎓 College Placement Portal
 
-A production-ready, enterprise-grade full-stack placement management platform designed for scale (10,000+ users). Features email OTP authentication, role-based access control, and a modern responsive UI.
+A comprehensive, state-of-the-art full-stack placement management platform. Beyond standard job tracking, it integrates **Generative AI**, **Real-Time Collaboration**, and **WebRTC Video** to provide a complete career preparation ecosystem for students and a robust management suite for administrators.
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue?logo=typescript)
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
 ![Express](https://img.shields.io/badge/Express-4.21-green?logo=express)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb)
+![Google Gemini](https://img.shields.io/badge/AI-Google_Gemini-blue?logo=google-gemini)
+![Socket.io](https://img.shields.io/badge/Real--time-Socket.io-black?logo=socket.io)
 
 ---
 
-## ✨ Features
+## ✨ Key Features
 
-### Authentication & Security
-- 📧 **Email OTP Login** — Passwordless authentication via one-time passcodes
-- 🔐 **JWT-based Auth** — Signed tokens with 7-day expiry
-- 👥 **Role-Based Access** — Student and Admin roles with route protection
-- 🛡️ **Security Hardened** — Helmet, CORS, rate limiting, bcrypt-hashed OTPs
-- ✅ **Input Validation** — Zod schemas on every API endpoint
+### 🤖 AI-Powered Career Tools
+- **Smart ATS Resume Scorer** — Leverages Google Gemini to analyze resumes against job descriptions, providing match scores, strength analysis, and missing skill detection.
+- **AI Coding Assistant** — Integrated with the Monaco Editor to provide conceptual logic hints during technical assessments without giving away the full solution.
+- **AI Mock Interviewer** — A full-featured text-based interview environment where an AI recruiter asks technical/HR questions and provides a detailed performance report.
 
-### Architecture
-- 🏗️ **Clean Architecture** — Separated controllers, services, routes, middleware
-- 📁 **Scalable Structure** — Enterprise SaaS-level folder organization
-- 🔄 **API Service Layer** — Axios instance with interceptors
-- 📊 **Structured Logging** — Winston (app) + Morgan (HTTP)
-- ⚡ **Type Safety** — TypeScript end-to-end
+### ⚡ Real-Time & Interactive
+- **Peer-to-Peer Video Mock Interviews** — Direct browser-to-browser video streaming via **WebRTC** (PeerJS) for secure, zero-cost mock interview sessions.
+- **Multiplayer Collaborative Coding** — Real-time code synchronization using **Yjs**, allowing two students to type in the same editor simultaneously.
+- **Instant Notifications** — **Socket.io** integration for real-time alerts on job application status updates, mentorship bookings, and system announcements.
 
-### Frontend
-- 🎨 **Modern UI** — Tailwind CSS with glassmorphism and gradient animations
-- 📱 **Responsive** — Mobile-first design
-- 🔒 **Protected Routes** — Client-side auth guards via Next.js App Router layouts
-- 🧩 **Reusable Components** — Button, Input, Card, Spinner, OTP form
+### 💼 Placement & Academic Management
+- **Job & Application Workflow** — Full CRUD system for job postings with status tracking (Applied, Shortlisted, Interview, Offered).
+- **Company Prep Tracks** — Curated learning paths (Courses, Assessments, Resources) designed for specific companies like Amazon, Google, or TCS.
+- **Automated Certificates** — Dynamic PDF certificate generation via `pdf-lib` upon 100% course completion.
+- **Public Portfolios** — Auto-generated, shareable student portfolios showcasing platform rank, badges, skills, and GitHub highlights.
+
+### 🏆 Community & Gamification
+- **Interview Experience Forum** — A peer-to-peer forum for sharing detailed interview rounds, questions, and tips.
+- **Hall of Fame (Leaderboard)** — Gamified ranking system where students earn points and badges for platform activity.
+- **Alumni Mentorship** — 1-on-1 booking system connecting current students with placed alumni for guidance.
 
 ---
 
@@ -38,11 +41,12 @@ A production-ready, enterprise-grade full-stack placement management platform de
 | Layer | Technology |
 |-------|-----------|
 | **Frontend** | Next.js 14 (App Router), React 18, TypeScript, Tailwind CSS, Axios |
-| **Backend** | Node.js, Express.js, TypeScript |
+| **Backend** | Node.js, Express.js, TypeScript, pdf-lib |
+| **Real-Time** | Socket.io, PeerJS (WebRTC), Yjs (CRDT) |
+| **AI Engine** | Google Gemini 1.5 Flash (via `@google/genai`) |
+| **Code Editor** | Monaco Editor (`@monaco-editor/react`) |
 | **Database** | MongoDB Atlas (Mongoose ODM) |
 | **Auth** | JWT, bcryptjs, Nodemailer (OTP) |
-| **Security** | Helmet, CORS, express-rate-limit, Zod |
-| **Deployment** | Vercel (frontend), Render (backend), MongoDB Atlas (database) |
 
 ---
 
@@ -52,34 +56,21 @@ A production-ready, enterprise-grade full-stack placement management platform de
 placement-portal/
 ├── frontend/                 # Next.js App Router
 │   ├── src/
-│   │   ├── app/              # App Router pages & layouts
-│   │   │   ├── (auth)/       # Auth pages (login)
-│   │   │   └── (dashboard)/  # Protected pages (student, admin)
-│   │   ├── components/       # UI and layout components
-│   │   ├── contexts/         # React Context (AuthContext)
-│   │   ├── hooks/            # Custom hooks (useAuth, useApi)
-│   │   ├── services/         # API service layer (Axios)
-│   │   ├── types/            # TypeScript interfaces
-│   │   └── lib/              # Utility functions
+│   │   ├── app/              # (auth), (dashboard), portfolio/, etc.
+│   │   ├── components/       # UI (Card, Button, Input) & Layout
+│   │   ├── contexts/         # AuthContext, NotificationContext
+│   │   ├── services/         # API Layer (Job, AI, Interview, etc.)
+│   │   └── types/            # Shared TypeScript interfaces
 │   └── package.json
 │
 ├── backend/                  # Express.js API Server
 │   ├── src/
-│   │   ├── config/           # DB, CORS, env config
-│   │   ├── controllers/      # Request handlers
-│   │   ├── middleware/       # Auth, role, error, validation, rate limit
-│   │   ├── models/           # Mongoose schemas (User, OTP)
+│   │   ├── controllers/      # Job, Interview, Experience, etc.
+│   │   ├── models/           # Mongoose schemas
 │   │   ├── routes/           # API route definitions
-│   │   ├── services/         # Business logic layer
-│   │   ├── types/            # TypeScript types
-│   │   ├── utils/            # ApiError, ApiResponse, logger
-│   │   ├── validators/       # Zod validation schemas
-│   │   ├── app.ts            # Express app setup
-│   │   └── server.ts         # Server entry point
+│   │   ├── services/         # Business logic (AI, Certificate, etc.)
+│   │   └── utils/            # Socket.io, pdfParser, logger
 │   └── package.json
-│
-├── .env.example              # Environment variables reference
-└── README.md
 ```
 
 ---
@@ -90,175 +81,59 @@ placement-portal/
 
 - **Node.js** ≥ 18.0.0
 - **npm** ≥ 9.0.0
-- **MongoDB Atlas** account ([create free cluster](https://www.mongodb.com/atlas))
-- **Gmail App Password** ([generate here](https://myaccount.google.com/apppasswords))
+- **MongoDB Atlas** account
+- **Google AI Studio API Key** ([get one for free](https://aistudio.google.com/))
+- **Gmail App Password**
 
-### 1. Clone the Repository
+### Setup
 
-```bash
-git clone https://github.com/your-username/placement-portal.git
-cd placement-portal
-```
+1. **Clone & Install:**
+   ```bash
+   git clone https://github.com/your-username/placement-portal.git
+   cd placement-portal/backend && npm install
+   cd ../frontend && npm install
+   ```
 
-### 2. Backend Setup
+2. **Environment Variables:**
+   - Configure `backend/.env` (see table below).
+   - Configure `frontend/.env.local` with `NEXT_PUBLIC_API_URL`.
 
-```bash
-cd backend
-npm install
-
-# Create environment file
-cp .env.example .env
-# Edit .env with your actual values (MongoDB URI, SMTP credentials, JWT secret)
-```
-
-### 3. Frontend Setup
-
-```bash
-cd ../frontend
-npm install
-
-# Create environment file
-cp .env.local.example .env.local
-# Edit .env.local with your backend API URL
-```
-
-### 4. Start Development Servers
-
-**Backend** (runs on port 5000):
-```bash
-cd backend
-npm run dev
-```
-
-**Frontend** (runs on port 3000):
-```bash
-cd frontend
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+3. **Run:**
+   - Backend: `npm run dev` (Port 5000)
+   - Frontend: `npm run dev` (Port 3000)
 
 ---
 
-## 🔐 Environment Variables
+## 🔐 Environment Variables (Backend)
 
-### Backend (`backend/.env`)
-
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `NODE_ENV` | Environment mode | `development` |
-| `PORT` | Server port | `5000` |
-| `MONGO_URI` | MongoDB connection string | `mongodb+srv://...` |
-| `JWT_SECRET` | JWT signing secret (min 16 chars) | `your-super-secret-key` |
-| `JWT_EXPIRES_IN` | Token expiry duration | `7d` |
-| `SMTP_HOST` | Email server host | `smtp.gmail.com` |
-| `SMTP_PORT` | Email server port | `587` |
-| `SMTP_EMAIL` | Sender email address | `you@gmail.com` |
-| `SMTP_PASS` | Email app password | `xxxx-xxxx-xxxx` |
-| `CLIENT_URL` | Frontend URL (CORS whitelist) | `http://localhost:3000` |
-
-### Frontend (`frontend/.env.local`)
-
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `NEXT_PUBLIC_API_URL` | Backend API base URL | `http://localhost:5000/api` |
+| Variable | Description |
+|----------|-------------|
+| `MONGO_URI` | MongoDB Connection String |
+| `JWT_SECRET` | Secret for signed tokens |
+| `GEMINI_API_KEY` | API Key from Google AI Studio |
+| `SMTP_EMAIL/PASS` | Credentials for OTP emails |
+| `FRONTEND_URL` | URL of your frontend (for CORS/Socket) |
 
 ---
 
-## 📡 API Overview
+## 📡 Key API Endpoints
 
-### Authentication
-
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| POST | `/api/auth/send-otp` | Send OTP to email | ❌ |
-| POST | `/api/auth/verify-otp` | Verify OTP, get JWT | ❌ |
-| GET | `/api/auth/me` | Get current user | ✅ |
-
-### Users
-
-| Method | Endpoint | Description | Auth | Role |
-|--------|----------|-------------|------|------|
-| GET | `/api/users/profile` | Get own profile | ✅ | Any |
-| PATCH | `/api/users/profile` | Update own profile | ✅ | Any |
-| GET | `/api/users` | List all users | ✅ | Admin |
-| DELETE | `/api/users/:id` | Delete a user | ✅ | Admin |
-
-### Health Check
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/health` | API status check |
-
----
-
-## 🔒 Security Implementation
-
-| Feature | Implementation |
-|---------|---------------|
-| **OTP Storage** | bcrypt-hashed — never stored in plaintext |
-| **OTP Expiry** | MongoDB TTL index auto-deletes after 10 minutes |
-| **Brute Force Protection** | Max 5 OTP verification attempts + IP rate limiting |
-| **Rate Limiting** | 100 req/15min global, 5 req/15min on OTP endpoints |
-| **JWT Tokens** | HMAC-signed, 7-day expiry |
-| **CORS** | Whitelist only `CLIENT_URL` |
-| **Headers** | Helmet for CSP, HSTS, X-Frame-Options, etc. |
-| **Input Validation** | Zod schemas on every request body |
-| **Error Handling** | Global middleware catches all errors, sanitizes in production |
-| **Logging** | Winston structured logs, Morgan HTTP access logs |
+| Category | Endpoint | Description |
+|----------|----------|-------------|
+| **Jobs** | `/api/jobs` | List, Post, Apply, Manage status |
+| **AI** | `/api/users/score-resume` | Scan resume against job desc |
+| **Interview** | `/api/interview/start` | Start AI mock session |
+| **Peer** | `/api/interview/peer` | Signaling for WebRTC rooms |
+| **Forum** | `/api/experiences` | Interview forum CRUD |
+| **Social** | `/api/mentorship/book` | Book session with Alumni |
 
 ---
 
 ## 🚢 Deployment Guide
 
-### Frontend → Vercel
-
-1. Push your code to GitHub
-2. Go to [vercel.com](https://vercel.com) → Import project
-3. Set root directory to `frontend`
-4. Add environment variable: `NEXT_PUBLIC_API_URL=https://your-backend.onrender.com/api`
-5. Deploy
-
-### Backend → Render
-
-1. Go to [render.com](https://render.com) → New Web Service
-2. Connect your GitHub repo
-3. Set root directory to `backend`
-4. Build command: `npm install && npm run build`
-5. Start command: `npm start`
-6. Add all environment variables from `backend/.env`
-
-### Database → MongoDB Atlas
-
-1. Go to [mongodb.com/atlas](https://www.mongodb.com/atlas)
-2. Create a free M0 cluster
-3. Create a database user
-4. Whitelist IPs (or use `0.0.0.0/0` for Render)
-5. Copy the connection string to `MONGO_URI`
-
----
-
-## 📝 Scripts Reference
-
-### Backend
-
-| Script | Command | Description |
-|--------|---------|-------------|
-| `dev` | `npm run dev` | Start with nodemon (hot reload) |
-| `build` | `npm run build` | Compile TypeScript to `dist/` |
-| `start` | `npm start` | Run compiled production code |
-| `lint` | `npm run lint` | Run ESLint |
-| `format` | `npm run format` | Format with Prettier |
-
-### Frontend
-
-| Script | Command | Description |
-|--------|---------|-------------|
-| `dev` | `npm run dev` | Start Next.js dev server |
-| `build` | `npm run build` | Build for production |
-| `start` | `npm start` | Serve production build |
-| `lint` | `npm run lint` | Run Next.js ESLint |
-| `format` | `npm run format` | Format with Prettier |
+- **Frontend:** Deploy to **Vercel** or **Netlify**. Ensure `NEXT_PUBLIC_API_URL` is set.
+- **Backend:** Deploy to **Render**, **Railway**, or **Railway**. Use a persistent disk if not using S3 for resumes.
+- **Database:** **MongoDB Atlas** (M0 Free Tier).
 
 ---
 

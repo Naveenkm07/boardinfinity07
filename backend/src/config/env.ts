@@ -29,6 +29,9 @@ const envSchema = z.object({
     // Client
     CLIENT_URL: z.string().url().default('http://localhost:3000'),
 
+    // AI
+    GEMINI_API_KEY: z.string().optional(),
+
     // Rate Limiting
     RATE_LIMIT_WINDOW_MS: z.coerce.number().default(900000), // 15 minutes
     RATE_LIMIT_MAX: z.coerce.number().default(100),

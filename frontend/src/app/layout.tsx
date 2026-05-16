@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { NotificationProvider } from '@/contexts/NotificationContext';
+import { ToastProvider } from '@/contexts/ToastContext';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -10,14 +12,19 @@ export const metadata: Metadata = {
 };
 
 /**
- * Root layout — wraps the entire application with the AuthProvider.
- * All pages inherit this layout.
+ * Root layout — wraps the entire application with necessary providers.
  */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
             <body>
-                <AuthProvider>{children}</AuthProvider>
+                <AuthProvider>
+                    <ToastProvider>
+                        <NotificationProvider>
+                            {children}
+                        </NotificationProvider>
+                    </ToastProvider>
+                </AuthProvider>
             </body>
         </html>
     );

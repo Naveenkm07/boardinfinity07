@@ -16,4 +16,9 @@ export const editorService = {
         const { data } = await api.get('/editor/submissions');
         return data.data.submissions;
     },
+
+    async getAiHint(code: string, language: string, problemStatement: string): Promise<string> {
+        const { data } = await api.post('/editor/hint', { code, language, problemStatement });
+        return data.data.hint;
+    },
 };

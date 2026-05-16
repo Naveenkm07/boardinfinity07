@@ -9,6 +9,14 @@ import resourceRoutes from './resource.routes';
 import competitionRoutes from './competition.routes';
 import editorRoutes from './editor.routes';
 import adminRoutes from './admin.routes';
+import jobRoutes from './job.routes';
+import resumeRoutes from './resume.routes';
+import interviewRoutes from './interview.routes';
+import experienceRoutes from './experience.routes';
+import mentorshipRoutes from './mentorship.routes';
+import notificationRoutes from './notification.routes';
+import certificateRoutes from './certificate.routes';
+import trackRoutes from './track.routes';
 
 const router = Router();
 
@@ -26,6 +34,14 @@ router.use('/resources', resourceRoutes);
 router.use('/competitions', competitionRoutes);
 router.use('/editor', editorRoutes);
 router.use('/admin', adminRoutes);
+router.use('/jobs', jobRoutes);
+router.use('/resume', resumeRoutes);
+router.use('/interview', interviewRoutes);
+router.use('/experiences', experienceRoutes);
+router.use('/mentorship', mentorshipRoutes);
+router.use('/notifications', notificationRoutes);
+router.use('/certificates', certificateRoutes);
+router.use('/tracks', trackRoutes);
 
 // Health check endpoint
 router.get('/health', (_req, res) => {

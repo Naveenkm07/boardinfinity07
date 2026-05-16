@@ -3,6 +3,7 @@ import { connectDB } from './config/db';
 import { env } from './config/env';
 import { logger } from './utils/logger';
 import { verifyEmailConnection } from './services/email.service';
+import { initSocket } from './utils/socket';
 
 /**
  * Server entry point.
@@ -32,6 +33,9 @@ const startServer = async (): Promise<void> => {
   =====================================================
       `);
         });
+        
+        // Initialize Socket.io
+        initSocket(server);
 
         // 4. Graceful shutdown handlers
         const gracefulShutdown = (signal: string) => {

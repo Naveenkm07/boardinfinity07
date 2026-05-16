@@ -2,22 +2,27 @@
 
 import React, { useEffect, useState } from 'react';
 import { dashboardService } from '../../../services/dashboard.service';
-import { DashboardStats, DashboardUpcoming } from '../../../types';
+import { jobService } from '../../../services/job.service';
+import { DashboardStats, DashboardUpcoming, Job } from '../../../types';
+import Link from 'next/link';
 
 export default function StudentDashboard() {
     const [stats, setStats] = useState<DashboardStats | null>(null);
     const [upcoming, setUpcoming] = useState<DashboardUpcoming | null>(null);
+    const [recommendedJobs, setRecommendedJobs] = useState<Job[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function fetchData() {
             try {
-                const [statsData, upcomingData] = await Promise.all([
+                const [statsData, upcomingData, jobsData] = await Promise.all([
                     dashboardService.getStats(),
                     dashboardService.getUpcoming(),
+                    jobService.getRecommendations(),
                 ]);
                 setStats(statsData);
                 setUpcoming(upcomingData);
+                setRecommendedJobs(jobsData || []);
             } catch (err) {
                 console.error('Failed to load dashboard:', err);
             } finally {
@@ -136,6 +141,47 @@ export default function StudentDashboard() {
                     </div>
                 ) : (
                     <p className="text-gray-400 text-sm">All caught up! No pending assessments.</p>
+                )}
+            </div>
+
+            {/* Recommended Jobs */}
+            <div className="rounded-xl bg-white p-6 shadow-lg border border-gray-100">
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-lg font-semibold">💼 Recommended for You</h2>
+                    <Link href="/student/jobs" className="text-xs font-bold text-indigo-600 hover:text-indigo-700 uppercase tracking-wider">
+                        View All
+                    </Link>
+                </div>
+                {recommendedJobs && recommendedJobs.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {recommendedJobs.map((job: any) => (
+                            <div key={job.id} className="p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-white hover:border-indigo-200 hover:shadow-md transition-all">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-primary-600 font-bold border border-gray-100">
+                                        {job.company?.charAt(0) || 'J'}
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sm font-bold text-gray-900 line-clamp-1">{job.title}</h3>
+                                        <p className="text-xs text-primary-600">{job.company}</p>
+                                    </div>
+                                </div>
+                                <div className="flex flex-wrap gap-1 mb-3">
+                                    {(job.skills || []).slice(0, 3).map((skill: string) => (
+                                        <span key={skill} className="px-1.5 py-0.5 bg-white text-gray-500 text-[10px] font-medium rounded border border-gray-100">
+                                            {skill}
+                                        </span>
+                                    ))}
+                                </div>
+                                <Link href={`/student/jobs/${job.id}`}>
+                                    <button className="w-full py-2 bg-white border border-gray-200 rounded-lg text-xs font-bold text-gray-700 hover:bg-primary-50 hover:border-primary-200 hover:text-primary-700 transition-all">
+                                        View Details
+                                    </button>
+                                </Link>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p className="text-gray-400 text-sm">Complete your profile and upload a resume to see personalized recommendations.</p>
                 )}
             </div>
         </div>

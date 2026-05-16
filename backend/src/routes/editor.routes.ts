@@ -8,6 +8,7 @@ router.use(authenticate);
 
 router.post('/run', EditorController.runCode);
 router.post('/save', EditorController.saveCode);
+router.post('/hint', EditorController.getHint);
 router.get('/submissions', EditorController.getSubmissions);
 
 export default router;

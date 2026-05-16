@@ -22,7 +22,22 @@ export class UserService {
      */
     static async updateProfile(
         userId: string,
-        updates: Partial<Pick<IUserDocument, 'name' | 'department' | 'rollNumber' | 'phone' | 'profileImage'>>,
+        updates: Partial<
+            Pick<
+                IUserDocument,
+                | 'name'
+                | 'department'
+                | 'rollNumber'
+                | 'phone'
+                | 'profileImage'
+                | 'summary'
+                | 'skills'
+                | 'socialLinks'
+                | 'experience'
+                | 'education'
+                | 'resumeUrl'
+            >
+        >,
     ): Promise<IUserDocument> {
         const user = await User.findByIdAndUpdate(userId, updates, {
             new: true,
@@ -74,5 +89,33 @@ export class UserService {
         if (!result) {
             throw ApiError.notFound('User not found');
         }
+    }
+
+    /**
+     * Add points to a user.
+     */
+    static async addPoints(userId: string, points: number, badgeName?: string): Promise<IUserDocument> {
+        const user = await User.findById(userId);
+        if (!user) throw ApiError.notFound('User not found');
+        
+        user.points += points;
+        if (badgeName) {
+            const hasBadge = user.badges.some(b => b.name === badgeName);
+            if (!hasBadge) {
+                user.badges.push({ name: badgeName, icon: '🏆', earnedAt: new Date() });
+            }
+        }
+        
+        return user.save();
+    }
+
+    /**
+     * Get leaderboard.
+     */
+    static async getLeaderboard(limit: number = 10): Promise<IUserDocument[]> {
+        return User.find({ role: UserRole.STUDENT })
+            .sort({ points: -1 })
+            .limit(limit)
+            .select('name points department badges');
     }
 }

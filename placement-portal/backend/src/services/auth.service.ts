@@ -20,14 +20,29 @@ export class AuthService {
     /**
      * Step 1: Send OTP to the provided email.
      */
-    static async sendOtp(email: string): Promise<void> {
+    static async sendOtp(email: string): Promise<string> {
         // Generate and store OTP
         const otp = await OtpService.generateOtp(email);
 
-        // Send OTP via email
-        await sendOtpEmail(email, otp);
+        // Log OTP in development mode for easier testing
+        if (env.NODE_ENV === 'development') {
+            logger.info(`[DEV ONLY] OTP for ${email}: ${otp}`);
+        }
 
-        logger.info(`OTP sent to ${email}`);
+        try {
+            // Send OTP via email
+            await sendOtpEmail(email, otp);
+            logger.info(`OTP sent to ${email}`);
+        } catch (error) {
+            // In development, we allow the flow to continue even if email fails
+            if (env.NODE_ENV === 'development') {
+                logger.warn(`Failed to send email to ${email}, but continuing because in development mode.`);
+            } else {
+                throw error;
+            }
+        }
+
+        return otp;
     }
 
     /**

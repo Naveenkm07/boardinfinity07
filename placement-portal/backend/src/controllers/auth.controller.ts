@@ -15,10 +15,14 @@ export class AuthController {
     static async sendOtp(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const { email } = req.body;
+            const { env } = await import('../config/env');
 
-            await AuthService.sendOtp(email);
+            const otp = await AuthService.sendOtp(email);
 
-            ApiResponse.success(res, null, 'OTP sent successfully. Please check your email.');
+            // In development, return OTP in response for easier testing via Network tab
+            const data = env.NODE_ENV === 'development' ? { otp } : null;
+
+            ApiResponse.success(res, data, 'OTP sent successfully. Please check your email.');
         } catch (error) {
             next(error);
         }
